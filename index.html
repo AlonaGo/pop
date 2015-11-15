@@ -1,0 +1,109 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Alona</title>
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+    }
+    canvas {
+        position: absolute;
+    }
+</style>
+<body>
+<!-- Load PIXI 2D engine -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/3.0.8/pixi.min.js"></script> 
+<script>
+
+var HEIGHT = 720;
+var WIDTH = 1280;
+
+//Set renderer resolution and scale view to browser window size
+var renderer = PIXI.autoDetectRenderer(WIDTH, HEIGHT,{backgroundColor : 0x70CCFA});
+renderer.view.style.width = window.innerWidth + "px";
+renderer.view.style.height = window.innerHeight + "px";
+
+
+// Add renderer <canvas> tag to body
+document.body.appendChild(renderer.view);
+
+
+//---------------------GAME CODE-------------------
+
+// create the root of the scene graph
+var stage = new PIXI.Container();
+
+// create a texture from an image path
+var texture = PIXI.Texture.fromImage('assets/pop.png');
+
+// create a new Sprite using the texture
+var pop = new PIXI.Sprite(texture);
+
+// center the sprite's anchor point
+pop.anchor.x = 0.5;
+pop.anchor.y = 0.5;
+
+// move the sprite to the center of the screen
+pop.position.x = WIDTH/2;
+pop.position.y = HEIGHT/2;
+
+stage.addChild(pop);
+
+// start animating in a loop
+animate();
+function animate() {
+    requestAnimationFrame(animate);
+
+    update();
+
+    // render the container
+    renderer.render(stage);
+}
+
+
+function update() {
+
+    // just for fun, let's rotate mr rabbit a little
+    pop.rotation += 0.01;
+
+
+
+}
+
+//--------------------------------------------------------------------------------------------------
+
+// resize image window 
+window.onresize = function() {
+    renderer.view.style.width = window.innerWidth + "px";
+    renderer.view.style.height = window.innerHeight + "px";
+}
+
+
+function doFullScreen() {
+    var isInFullScreen = (document.fullScreenElement && document.fullScreenElement !==     null) ||    // alternative standard method  
+            (document.mozFullScreen || document.webkitIsFullScreen);
+
+    var docElm = document.documentElement;
+    if (!isInFullScreen) {
+
+        if (docElm.requestFullscreen) {
+            docElm.requestFullscreen();
+        }
+        else if (docElm.mozRequestFullScreen) {
+            docElm.mozRequestFullScreen();
+        }
+        else if (docElm.webkitRequestFullScreen) {
+            docElm.webkitRequestFullScreen();
+        }
+    }
+}
+// TAB KEY FULLSCREEN
+document.addEventListener("keydown",function(e) {
+    if (e.keyCode == 9) {
+        doFullScreen();
+    }
+}, false);
+
+</script>
+</body>
