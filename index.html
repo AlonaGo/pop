@@ -1,6 +1,6 @@
 <!doctype html>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, minimal-ui" />
 <title>Alona</title>
 <style>
     body {
@@ -13,14 +13,16 @@
 </style>
 <body>
 <!-- Load PIXI 2D engine -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/3.0.8/pixi.min.js"></script> 
+<script src="pixi.min.js"></script> 
+<script src="pixi-lights.min.js"></script> 
+<script src="TweenMax.min.js"></script> 
 <script>
 
 var HEIGHT = 720;
 var WIDTH = 1280;
 
 //Set renderer resolution and scale view to browser window size
-var renderer = PIXI.autoDetectRenderer(WIDTH, HEIGHT,{backgroundColor : 0x70CCFA});
+var renderer = new PIXI.lights.WebGLDeferredRenderer(WIDTH, HEIGHT);
 renderer.view.style.width = window.innerWidth + "px";
 renderer.view.style.height = window.innerHeight + "px";
 
@@ -34,11 +36,24 @@ document.body.appendChild(renderer.view);
 // create the root of the scene graph
 var stage = new PIXI.Container();
 
+// Create a point light
+var light = new PIXI.lights.PointLight(0xff0000, 5);
+stage.addChild(light);
+stage.addChild(new PIXI.lights.AmbientLight(null, 3));
+
 // create a texture from an image path
 var texture = PIXI.Texture.fromImage('assets/pop.png');
+var normalTexture = PIXI.Texture.fromImage('assets/pop_n.png');
+var bgTexture = PIXI.Texture.fromImage('assets/bg.png');
+var bgNormal = PIXI.Texture.fromImage('assets/bg_n.png');
 
 // create a new Sprite using the texture
 var pop = new PIXI.Sprite(texture);
+pop.normalTexture = normalTexture;
+
+var bg = new PIXI.Sprite(bgTexture);
+bg.normalTexture = bgNormal;
+stage.addChild(bg);
 
 // center the sprite's anchor point
 pop.anchor.x = 0.5;
@@ -49,6 +64,8 @@ pop.position.x = WIDTH/2;
 pop.position.y = HEIGHT/2;
 
 stage.addChild(pop);
+
+shakeTween(pop.position);
 
 // start animating in a loop
 animate();
@@ -61,14 +78,26 @@ function animate() {
     renderer.render(stage);
 }
 
+renderer.view.addEventListener('mousemove', function (e) {
+    var rect = e.target.getBoundingClientRect();
+
+    light.position.x = e.clientX - rect.left;
+    light.position.y = e.clientY - rect.top;
+});
 
 function update() {
 
     // just for fun, let's rotate mr rabbit a little
-    pop.rotation += 0.01;
-
-
-
+    //pop.rotation += 0.01;
+}
+    //shake from http://stackoverflow.com/questions/15313312/how-to-create-a-wiggle-effect-using-greensock
+function shakeTween(item, repeatCount){
+    var startX = item.x;
+    var startY = item.y
+    var max = 8;
+    var min = -8;
+    TweenMax.to(item,0.1,{repeat:-1, x: startX + Math.floor(Math.random() * (max - min + 1) + min), delay:.1});
+    TweenMax.to(item,0.1,{y:startY, x:startX});
 }
 
 //--------------------------------------------------------------------------------------------------
