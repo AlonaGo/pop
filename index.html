@@ -40,12 +40,12 @@ var stage = new PIXI.Container();
 // Create a point light
 var light = new PIXI.lights.PointLight(0xED3705, 5);
 stage.addChild(light);
-stage.addChild(new PIXI.lights.AmbientLight(null, 3));
+stage.addChild(new PIXI.lights.AmbientLight(null, 3.2));
 
 // create a texture from an image path
 var texture = PIXI.Texture.fromImage('assets/popcorn-3.png');
 var normalTexture = PIXI.Texture.fromImage('assets/pop_n.png');
-var bgTexture = PIXI.Texture.fromImage('assets/bg_y.png');
+var bgTexture = PIXI.Texture.fromImage('assets/bg_g.png');
 var bgNormal = PIXI.Texture.fromImage('assets/bg_n.png');
 var poppedTexture = PIXI.Texture.fromImage('assets/popped_resize.png');
 
